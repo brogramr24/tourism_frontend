@@ -13,18 +13,18 @@ const ExperienceDetail = () => {
     const { user } = useAuth();
     const navigate = useNavigate();
 
-    useEffect(() => {
-        fetchExperience();
-    }, [fetchExperience]);
-
     const fetchExperience = async () => {
-        try {
-            const response = await axios.get(`${API_URL}/api/experiences/${id}`);
-            setExperience(response.data);
-        } catch (error) {
-            console.error('Error:', error);
-        }
-    };
+    try {
+        const response = await axios.get(`${API_URL}/api/experiences/${id}`);
+        setExperience(response.data);
+    } catch (error) {
+        console.error('Error:', error);
+    }
+};
+
+useEffect(() => {
+    fetchExperience();
+}, []);
 
     const handleBooking = async () => {
         if (!user) {
