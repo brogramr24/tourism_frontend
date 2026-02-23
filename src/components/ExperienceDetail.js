@@ -15,7 +15,7 @@ const ExperienceDetail = () => {
 
     useEffect(() => {
         fetchExperience();
-    }, [id]);
+    }, [fetchExperience]);
 
     const fetchExperience = async () => {
         try {
