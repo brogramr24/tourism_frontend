@@ -6,7 +6,7 @@ const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:3001';
 
 const Bookings = () => {
     const [bookings, setBookings] = useState([]);
-    const { user } = useContext(AuthContext);
+    const { user } = useAuth();
 
     useEffect(() => {
         fetchBookings();
