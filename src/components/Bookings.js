@@ -1,15 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { useAuth } from '../context/AuthContext';
 
 const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:3001';
 
 const Bookings = () => {
     const [bookings, setBookings] = useState([]);
-
-    useEffect(() => {
-        fetchBookings();
-    }, []);
 
     const fetchBookings = async () => {
         try {
@@ -19,6 +14,10 @@ const Bookings = () => {
             console.error('Error:', error);
         }
     };
+
+    useEffect(() => {
+        fetchBookings();
+    }, []);
 
     return (
         <div>
