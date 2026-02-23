@@ -9,25 +9,34 @@ const ExperienceList = () => {
     const [loading, setLoading] = useState(true);
     const [filters, setFilters] = useState({ location: '', category: '' });
 
-    useEffect(() => {
-        fetchExperiences();
-    }, []);
-
     const fetchExperiences = async () => {
         try {
             const response = await axios.get(`${API_URL}/api/experiences`);
-            setExperiences(response.data);
+
+            // 🔥 SAFE FIX: Ensure it's always an array
+            const data = Array.isArray(response.data)
+                ? response.data
+                : response.data?.experiences || [];
+
+            setExperiences(data);
+
         } catch (error) {
             console.error('Error fetching experiences:', error);
+            setExperiences([]); // prevent crash
         } finally {
             setLoading(false);
         }
     };
 
-    const filteredExperiences = experiences.filter(exp => {
+    useEffect(() => {
+        fetchExperiences();
+    }, []);
+
+    // 🔥 SAFE FILTER
+    const filteredExperiences = (Array.isArray(experiences) ? experiences : []).filter(exp => {
         return (
-            exp.location.toLowerCase().includes(filters.location.toLowerCase()) &&
-            (filters.category === '' || exp.category === filters.category)
+            exp?.location?.toLowerCase().includes(filters.location.toLowerCase()) &&
+            (filters.category === '' || exp?.category === filters.category)
         );
     });
 
@@ -36,7 +45,7 @@ const ExperienceList = () => {
     return (
         <div>
             <h1>Available Experiences</h1>
-            
+
             <div className="card" style={{ marginTop: '20px' }}>
                 <h3>Filter</h3>
                 <div style={{ display: 'flex', gap: '10px', marginTop: '10px' }}>
@@ -44,11 +53,16 @@ const ExperienceList = () => {
                         type="text"
                         placeholder="Location..."
                         value={filters.location}
-                        onChange={(e) => setFilters({...filters, location: e.target.value})}
+                        onChange={(e) =>
+                            setFilters({ ...filters, location: e.target.value })
+                        }
                     />
-                    <select 
+
+                    <select
                         value={filters.category}
-                        onChange={(e) => setFilters({...filters, category: e.target.value})}
+                        onChange={(e) =>
+                            setFilters({ ...filters, category: e.target.value })
+                        }
                     >
                         <option value="">All Categories</option>
                         <option value="adventure">Adventure</option>
@@ -69,6 +83,7 @@ const ExperienceList = () => {
                         <p>⏱️ {exp.duration_hours} hours</p>
                         <p>💰 ${exp.price_per_person} per person</p>
                         <p>Category: {exp.category}</p>
+
                         <Link to={`/experience/${exp.experience_id}`}>
                             <button className="btn">View Details</button>
                         </Link>
